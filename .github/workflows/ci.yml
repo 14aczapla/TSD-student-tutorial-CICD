@@ -27,8 +27,8 @@ jobs:
       - name: Run Formatting Check
         run: black --check .
 
-      # - name: Run Linter
-      #   run: ruff check .
+      - name: Run Linter
+        run: ruff check .
 
       - name: Run Tests
         run: pytest
