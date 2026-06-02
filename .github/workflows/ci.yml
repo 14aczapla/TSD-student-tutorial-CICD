@@ -32,3 +32,25 @@ jobs:
 
       - name: Run Tests
         run: pytest
+
+  pr-comment:
+    if: github.event_name == 'pull_request'
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request?.number || context.issue.number;
+            if (!prNumber) {
+              throw new Error('No pull request number found in the event context.');
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: "CI passed — wszystkie testy i kontrole przeszły pomyślnie"
+            });
